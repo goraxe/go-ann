@@ -19,6 +19,7 @@ type ConnectionArray []*Connection
 type message struct {
     message string
     payload interface{}
+    reply chan string
 }
 
 type Network struct  {
@@ -95,17 +96,12 @@ func CreateNetwork(inputs int, outputs int) *Network {
     return n
 }
 
-/*func (v *Vector) Len() int{
-    return len(*v)
-}*/
-
-
 func (network *Network) RunPattern(input *vector.Vector) (output *vector.Vector, err os.Error) {
 
      fmt.Printf("resetting network\n");
-     ch := make(chan message)
+     ch := make(chan string)
      for _, v := range network.command {
-         v <- message{ "Reset", ch } // send reset
+         v <- message{ message: "Reset", reply: ch } // send reset
          // wait for response
          _ = <-ch
      }
@@ -184,10 +180,11 @@ func neuronLoop(neuron *neuron) {
                           case "AddOutput":
                             neuron.trace("adding output %v", command.payload)
                             neuron.outputs.Push(command.payload)
+                            command.reply <- "Ok"
                           case "Reset":
                             neuron.inputs = neuron.inputs_waiting
                             neuron.accumulator = 0
-                            command.payload.(chan message) <- message{message: "Ok"} 
+                            command.reply <- "Ok" 
                       }
 
         }
@@ -196,8 +193,10 @@ func neuronLoop(neuron *neuron) {
 
 
 func (neuron *Neuron) AddOutput(conn *Connection ) {
-    
-    neuron.command <- message{ "AddOutput",  conn}
+    ch := make(chan string)
+    neuron.command <- message{ message: "AddOutput",  payload: conn, reply: ch}
+    // synchronise
+    _ = <-ch
 }
 
 // a little backwards maybe 
