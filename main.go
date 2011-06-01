@@ -1,48 +1,37 @@
 package main
 
 import (
-//	"flag"
-//	"json"
     "os"
-    "./file"
     "fmt"
     "./network"
     "container/vector"
 )
 
-// var network_file = flag.
-
-
 
 func main() {
-	f, err := file.Open("./network")
-    if f == nil {
-        fmt.Printf("cant't open file; err=%s\n", err.String())
-        os.Exit(1)
-    }
-    fmt.Printf("opened network file\n");
+    // create a network with two inputs one output
+    fmt.Printf("Creating network\n")
     ann :=  network.CreateNetwork(2, 1)
-    fmt.Printf("\twe have a network %v\n", ann)
 
-    fmt.Printf("\tcreating neuron1\n")
+    fmt.Printf("\tCreating neuron1\n")
     neuron1 := ann.CreateNeuron("neuron1", 1, 1.0)
     ann.AddInput(0, neuron1, 1)
 
-    fmt.Printf("\tcreating neuron2\n")
+    fmt.Printf("\tCreating neuron2\n")
     neuron2 := ann.CreateNeuron("neuron2", 1, 1.0)
     ann.AddInput(1, neuron2, 1)
     
-    fmt.Printf("\tcreating neuron3\n")
+    fmt.Printf("\tCreating neuron3\n")
     neuron3 := ann.CreateNeuron("neuron3", 2, 1.0)
     neuron3.AddInput(neuron1, 1)
     neuron3.AddInput(neuron2, -1)
 
-    fmt.Printf("\tcreating neuron4\n")
+    fmt.Printf("\tCreating neuron4\n")
     neuron4 := ann.CreateNeuron("neuron4", 2, 1.0)
     neuron4.AddInput(neuron1, -1)
     neuron4.AddInput(neuron2, 1)
 
-    fmt.Printf("\tcreating neuron5\n")
+    fmt.Printf("\tCreating neuron5\n")
     neuron5 := ann.CreateNeuron("neuron5", 2, 1.0)
     neuron5.AddInput(neuron3, 1)
     neuron5.AddInput(neuron4, 1)
