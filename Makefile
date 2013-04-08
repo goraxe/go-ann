@@ -1,24 +1,24 @@
-GC = 6g
-LD = 6l
+GC = go
 TARG = ann
 
-DEPS = file.6 network.6
-O_FILES =  main.6
+DEPS = file.go network.go
+O_FILES =  main.go
 
 all: $(TARG)
 
-.SUFFIXES: .go .6
+.SUFFIXES: .go
 
 $(TARG): $(DEPS) $(O_FILES)
-	$(LD) -o $@ $(O_FILES)
+	$(GC) build $@ $(O_FILES)
 @echo "Done. Executable is: $@"
 
 #$(O_FILES): %.6: %.go
 #	$(GC) -c $<
 
-.go.6:
-	$(GC) -c $<
+.go:
+	$(GC) build $<
 
 
 clean:
-	rm -rf *.[$(OS)o] *.a [$(OS)].out _obj $(TARG) *.6
+	rm -rf *.[$(OS)o] *.a [$(OS)].out _obj $(TARG)
+
