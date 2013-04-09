@@ -1,7 +1,7 @@
 package network
 
 import (
-	"os"
+	"errors"
 	"fmt"
 	"container/list"
 )
@@ -126,7 +126,7 @@ func (network *Network) SetLogLevel(level int)  {
 	network.log_level = level
 }
 // Run Pattern
-func (network *Network) RunPattern(input *list.List) (output *list.List, err os.Error) {
+func (network *Network) RunPattern(input *list.List) (output *list.List, err error) {
 
 	network.debug("resetting network\n");
 	ch := make(chan string)
@@ -137,13 +137,13 @@ func (network *Network) RunPattern(input *list.List) (output *list.List, err os.
 	}
 	// make sure pattern is same size as inputs
 	if (input.Len() != network.inputs.Len() ) {
-		return nil, os.EINVAL
+		return nil, errors.New("invalid argument")
 	}
 	network.info("presenting pattern %v to network\n", *input)
 	i := uint(0)
 	for v := input.Front(); v != nil ; v = v.Next() {
 		network.trace("\tsending %v to input %v\n", v, i)
-		network.inputs[i].c <- v.Value * network.inputs[i].weight
+		network.inputs[i].c <- v.Value.(Data) * network.inputs[i].weight
 		i++
 	}
 	output = new(list.List)
@@ -206,7 +206,7 @@ func neuronLoop(neuron *neuron) {
 				}
 				neuron.trace("is fireing value %v", fire_val)
 				for e := neuron.outputs.Front(); e != nil; e = e.Next() {
-					output := e.Value
+					output := e.Value.(*Connection)
 					output.c <- output.weight * fire_val
 				}
 			}

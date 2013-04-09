@@ -3,7 +3,8 @@ package main
 import (
 	"os"
 	"fmt"
-	"./network.go"
+	"errors"
+	"./network"
 	"container/list"
 )
 
@@ -42,14 +43,15 @@ func main() {
 	var (
 		output *list.List
 		expected *list.List
-		e os.Error
+		e error
 	)
+	const EINVAL = errors("invalid argument")
 	// pattern 0 test
 	pattern1 := network.MakePattern(0,0)
 	expected = network.MakePattern(0)
 
 	output, e = ann.RunPattern(pattern1)
-	if(e == os.EINVAL) {
+	if(e == EINVAL) {
 		os.Exit(1)
 	}
 	if(network.CompareVector(expected, output)) {
@@ -62,7 +64,7 @@ func main() {
 	expected = network.MakePattern(1)
 
 	output, e = ann.RunPattern(pattern2)
-	if(e == os.EINVAL) {
+	if(e == EINVAL) {
 		os.Exit(1)
 	}
 	if(network.CompareVector(expected, output)) {
@@ -75,7 +77,7 @@ func main() {
 	expected = network.MakePattern(1)
 
 	output, e = ann.RunPattern(pattern3)
-	if(e == os.EINVAL) {
+	if(e == EINVAL) {
 		os.Exit(1)
 	}
 	if(network.CompareVector(expected, output)) {
@@ -88,7 +90,7 @@ func main() {
 	expected = network.MakePattern(0)
 
 	output, e = ann.RunPattern(pattern4)
-	if(e == os.EINVAL) {
+	if(e == EINVAL) {
 		os.Exit(1)
 	}
 	if(network.CompareVector(expected, output)) {
