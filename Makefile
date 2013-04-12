@@ -1,16 +1,20 @@
-GC = gccgo
-LD = gccgo
-TARG = ann
-
-DEPS = network.go
-O_FILES = main.go
+GC = go
+TARG = anntest
 
 all: $(TARG)
 
-$(TARG): $(DEPS) $(O_FILES)
-	$(GC) -c $(DEPS)
-	$(GC) -c $(O_FILES)
+myann: src/myann/myann.go
+	$(GC) install $@
+
+main: src/main/main.go
+	$(GC) install $@
+
+$(TARG): myann main
+	
+run:
+	./bin/main
 
 clean:
-	rm -rf *.out *.a *.o *.8
+	$(GC) clean
+	rm -rf pkg/* bin/*
 
