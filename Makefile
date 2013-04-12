@@ -1,7 +1,12 @@
 GC = go
 TARG = anntest
 
+PWD := $(shell pwd)
+
 all: $(TARG)
+
+warn:
+	@ echo "please export GOPATH=$(PWD)"
 
 myann: src/myann/myann.go
 	$(GC) install $@
@@ -9,7 +14,7 @@ myann: src/myann/myann.go
 main: src/main/main.go
 	$(GC) install $@
 
-$(TARG): myann main
+$(TARG): warn myann main
 	
 run:
 	./bin/main
