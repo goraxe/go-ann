@@ -9,36 +9,41 @@ import (
 )
 
 func main() {
-	/* create a network with two inputs one output */
-	network :=  myann.CreateNetwork(2, 1)
-	network.SetLogLevel(3)
-
+	/* create a network with two inputs one output
+	 *  0 -> n1  - n3
+	             X     > n5 -> output1
+	    1 -> n2  - n4
+	 */
+	network := myann.CreateNetwork(2, 1)
+	network.SetLogLevel(1)
+	// Layer 1, 2 Input
 	neuron1 := network.CreateNeuron("neuron1", 1.0)
 	//neuron1.SetLogLevel(3)
 	network.AddInput(0, neuron1, 1)
-
 	neuron2 := network.CreateNeuron("neuron2", 1.0)
 	//neuron2.SetLogLevel(3)
 	network.AddInput(1, neuron2, 1)
 	
+	// Layer 2, 2 Hidden
 	neuron3 := network.CreateNeuron("neuron3", 1.0)
 	//neuron3.SetLogLevel(3)
 	neuron3.AddInput(neuron1, 1)
 	neuron3.AddInput(neuron2, -1)
-
 	neuron4 := network.CreateNeuron("neuron4", 1.0)
 	//neuron4.SetLogLevel(3)
 	neuron4.AddInput(neuron1, -1)
 	neuron4.AddInput(neuron2, 1)
 
+	// Layer 3, 1 Hidden
 	neuron5 := network.CreateNeuron("neuron5", 1.0)
 	//neuron5.SetLogLevel(3)
 	neuron5.AddInput(neuron3, 1)
 	neuron5.AddInput(neuron4, 1)
 
+	// 1 Output
 	output1 := network.Output(0)
 	neuron5.AddOutput(output1)
-
+	
 	/* test network */
 	var (
 		output *list.List
@@ -55,7 +60,7 @@ func main() {
 		os.Exit(1)
 	}
 	if(myann.CompareList(expected, output)) {
-		fmt.Printf("ok: expected output pattern 0\n")
+		fmt.Printf("ok: 0 expected output pattern\n")
 	} else {
 		fmt.Printf("fail: expected output pattern 0\n")
 		myann.PrintList(expected)
@@ -70,7 +75,7 @@ func main() {
 		os.Exit(1)
 	}
 	if(myann.CompareList(expected, output)) {
-		fmt.Printf("ok: expected output pattern 1\n")
+		fmt.Printf("ok: 1 expected output pattern\n")
 	} else {
 		fmt.Printf("fail: expected output pattern 1 got: %v expected %v\n", output, expected)
 	}
@@ -83,7 +88,7 @@ func main() {
 		os.Exit(1)
 	}
 	if(myann.CompareList(expected, output)) {
-		fmt.Printf("ok: expected output pattern 2\n")
+		fmt.Printf("ok: 2 expected output pattern\n")
 	} else {
 		fmt.Printf("fail: expected output pattern 2 got: %v expected %v\n", output, expected)
 	}
@@ -96,7 +101,7 @@ func main() {
 		os.Exit(1)
 	}
 	if(myann.CompareList(expected, output)) {
-		fmt.Printf("ok: expected output pattern 3\n")
+		fmt.Printf("ok: 3 expected output pattern\n")
 	} else {
 		fmt.Printf("fail: expected output pattern 3 got: %v expected %v\n", output, expected)
 	}
