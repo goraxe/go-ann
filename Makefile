@@ -1,24 +1,25 @@
-GC = 6g
-LD = 6l
-TARG = ann
+GC = go
+TARG = anntest
 
-DEPS = file.6 network.6
-O_FILES =  main.6
+PWD := $(shell pwd)
 
 all: $(TARG)
 
-.SUFFIXES: .go .6
+warn:
+	@ echo "please export GOPATH=$(PWD)"
 
-$(TARG): $(DEPS) $(O_FILES)
-	$(LD) -o $@ $(O_FILES)
-@echo "Done. Executable is: $@"
+myann: src/myann/myann.go
+	$(GC) install $@
 
-#$(O_FILES): %.6: %.go
-#	$(GC) -c $<
+main: src/main/main.go
+	$(GC) install $@
 
-.go.6:
-	$(GC) -c $<
-
+$(TARG): warn myann main
+	
+run:
+	./bin/main
 
 clean:
-	rm -rf *.[$(OS)o] *.a [$(OS)].out _obj $(TARG) *.6
+	$(GC) clean
+	rm -rf pkg/* bin/*
+
