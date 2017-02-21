@@ -1,8 +1,8 @@
 package myann
 
 import (
-	"fmt"
 	"container/list"
+	"fmt"
 )
 
 const NCPU = 4
@@ -15,21 +15,21 @@ type Data float64
 
 /* the real neuron inside a goroutine */
 type neuron struct {
-	name  string
-	input chan Data
-	outputs *list.List
-	command chan message
-	inputs int
+	name           string
+	input          chan Data
+	outputs        *list.List
+	command        chan message
+	inputs         int
 	inputs_waiting int
-	accumulator Data
-	threshold Data
-	log_level int
+	accumulator    Data
+	threshold      Data
+	log_level      int
 }
 
 /**
  * construct functions
  */
-func MakePattern(a...Data) (*list.List) {
+func MakePattern(a ...Data) *list.List {
 	pattern := new(list.List)
 	for _, v := range a {
 		pattern.PushBack(v)
@@ -38,7 +38,7 @@ func MakePattern(a...Data) (*list.List) {
 }
 
 func CompareList(v1 *list.List, v2 *list.List) bool {
-	if (v1.Len() != v2.Len()) {
+	if v1.Len() != v2.Len() {
 		return false
 	}
 	e1 := v1.Front()
@@ -59,7 +59,7 @@ func PrintList(l *list.List) {
 		fmt.Printf("%v ", e.Value)
 		e = e.Next()
 	}
-	fmt.Print("\n");
+	fmt.Print("\n")
 }
 
 func (v *ConnectionArray) Len() int {
@@ -71,13 +71,13 @@ func neuronLoop(neuron *neuron) {
 		select {
 		case v := <-neuron.input:
 			neuron.trace("recieved %v", v)
-			neuron.inputs --
+			neuron.inputs--
 			neuron.trace("neuron.inputs remaing is %v", neuron.inputs)
 			neuron.accumulator += v
 			neuron.trace("neuron.accumulator is %v", neuron.accumulator)
-			if ( neuron.inputs == 0 ) {
+			if neuron.inputs == 0 {
 				var fire_val Data
-				if ( neuron.accumulator >= neuron.threshold ) {
+				if neuron.accumulator >= neuron.threshold {
 					fire_val = 1.0
 				} else {
 					fire_val = 0.0
@@ -90,36 +90,35 @@ func neuronLoop(neuron *neuron) {
 			}
 		case command := <-neuron.command:
 			switch command.message {
-				case AddOutput:
-					neuron.trace("adding output %v", command.payload)
-					neuron.outputs.PushBack(command.payload)
-					command.reply <- "Ok"
-				case AddInput:
-					neuron.inputs_waiting++
-					neuron.inputs++
-					neuron.trace("input_wating is %v inputs is %v", neuron.inputs_waiting, neuron.inputs)
-					command.reply <- "Ok"
-				case Reset:
-					neuron.inputs = neuron.inputs_waiting
-					neuron.accumulator = 0
-					command.reply <- "Ok"
-				case SetLogLevel:
-					neuron.log_level = command.payload.(int)
-					command.reply <- "Ok"
-				default:
-					if command.reply != nil {
-						command.reply <- fmt.Sprintf("%v Error: Unknown command: %v", neuron.name, command.message)
-					} else {
-						fmt.Printf("%v Error: Unknown command: %v", neuron.name, command.message)
-					}
+			case AddOutput:
+				neuron.trace("adding output %v", command.payload)
+				neuron.outputs.PushBack(command.payload)
+				command.reply <- "Ok"
+			case AddInput:
+				neuron.inputs_waiting++
+				neuron.inputs++
+				neuron.trace("input_wating is %v inputs is %v", neuron.inputs_waiting, neuron.inputs)
+				command.reply <- "Ok"
+			case Reset:
+				neuron.inputs = neuron.inputs_waiting
+				neuron.accumulator = 0
+				command.reply <- "Ok"
+			case SetLogLevel:
+				neuron.log_level = command.payload.(int)
+				command.reply <- "Ok"
+			default:
+				if command.reply != nil {
+					command.reply <- fmt.Sprintf("%v Error: Unknown command: %v", neuron.name, command.message)
+				} else {
+					fmt.Printf("%v Error: Unknown command: %v", neuron.name, command.message)
+				}
 			}
-		}//select
-	}// for
+		} //select
+	} // for
 }
 
-func log_message(log_level int, message_level int, format string, a...interface{}) {
+func log_message(log_level int, message_level int, format string, a ...interface{}) {
 	if log_level >= message_level {
-		fmt.Printf(format,  a...)
+		fmt.Printf(format, a...)
 	}
 }
-
