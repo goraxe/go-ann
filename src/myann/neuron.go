@@ -42,18 +42,18 @@ func (neuron *Neuron) SetLogLevel(level int) {
 }
 
 func (neuron *neuron) info(format string, a ...interface{}) {
-	real_format := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
-	log_message(neuron.log_level, 1, real_format, a...)
+	realFormat := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
+	logMessage(neuron.logLevel, 1, realFormat, a...)
 }
 
 func (neuron *neuron) debug(format string, a ...interface{}) {
-	real_format := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
-	log_message(neuron.log_level, 2, real_format, a...)
+	realFormat := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
+	logMessage(neuron.logLevel, 2, realFormat, a...)
 }
 
 func (neuron *neuron) trace(format string, a ...interface{}) {
-	real_format := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
-	log_message(neuron.log_level, 3, real_format, a...)
+	realFormat := fmt.Sprintf("\t\t%v: %v\n", neuron.name, format)
+	logMessage(neuron.logLevel, 3, realFormat, a...)
 }
 
 /*

@@ -13,10 +13,10 @@ type Connection struct {
 type ConnectionArray []*Connection
 
 type Network struct {
-	inputs    ConnectionArray         // for presenting a pattern to the network
-	outputs   ConnectionArray         // for collecting the results
-	command   map[string]chan message // for sending a command to all neurons
-	log_level int
+	inputs   ConnectionArray         // for presenting a pattern to the network
+	outputs  ConnectionArray         // for collecting the results
+	command  map[string]chan message // for sending a command to all neurons
+	logLevel int
 }
 
 /**
@@ -35,7 +35,7 @@ func newConnectionArray(connections int) *ConnectionArray {
 }
 
 func CreateNetwork(inputs int, outputs int) *Network {
-	n := &Network{command: make(map[string]chan message), log_level: 1}
+	n := &Network{command: make(map[string]chan message), logLevel: 1}
 	n.info("Creating network %v inputs, %v outputs\n", inputs, outputs)
 	n.inputs = *newConnectionArray(inputs)
 	n.outputs = *newConnectionArray(outputs)
@@ -116,21 +116,21 @@ func (network *Network) Output(number int) *Connection {
  * log functions
  */
 func (network *Network) LogLevel() int {
-	return network.log_level
+	return network.logLevel
 }
 
 func (network *Network) SetLogLevel(level int) {
-	network.log_level = level
+	network.logLevel = level
 }
 
 func (network *Network) info(format string, a ...interface{}) {
-	log_message(network.log_level, 1, format, a...)
+	logMessage(network.logLevel, 1, format, a...)
 }
 
 func (network *Network) debug(format string, a ...interface{}) {
-	log_message(network.log_level, 2, format, a...)
+	logMessage(network.logLevel, 2, format, a...)
 }
 
 func (network *Network) trace(format string, a ...interface{}) {
-	log_message(network.log_level, 3, format, a...)
+	logMessage(network.logLevel, 3, format, a...)
 }

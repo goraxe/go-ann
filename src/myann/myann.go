@@ -15,15 +15,15 @@ type Data float64
 
 /* the real neuron inside a goroutine */
 type neuron struct {
-	name           string
-	input          chan Data
-	outputs        *list.List
-	command        chan message
-	inputs         int
-	inputs_waiting int
-	accumulator    Data
-	threshold      Data
-	log_level      int
+	name          string
+	input         chan Data
+	outputs       *list.List
+	command       chan message
+	inputs        int
+	inputsWaiting int
+	accumulator   Data
+	threshold     Data
+	logLevel      int
 }
 
 /**
@@ -95,16 +95,16 @@ func neuronLoop(neuron *neuron) {
 				neuron.outputs.PushBack(command.payload)
 				command.reply <- "Ok"
 			case AddInput:
-				neuron.inputs_waiting++
+				neuron.inputsWaiting++
 				neuron.inputs++
-				neuron.trace("input_wating is %v inputs is %v", neuron.inputs_waiting, neuron.inputs)
+				neuron.trace("input_wating is %v inputs is %v", neuron.inputsWaiting, neuron.inputs)
 				command.reply <- "Ok"
 			case Reset:
-				neuron.inputs = neuron.inputs_waiting
+				neuron.inputs = neuron.inputsWaiting
 				neuron.accumulator = 0
 				command.reply <- "Ok"
 			case SetLogLevel:
-				neuron.log_level = command.payload.(int)
+				neuron.logLevel = command.payload.(int)
 				command.reply <- "Ok"
 			default:
 				if command.reply != nil {
@@ -117,8 +117,8 @@ func neuronLoop(neuron *neuron) {
 	} // for
 }
 
-func log_message(log_level int, message_level int, format string, a ...interface{}) {
-	if log_level >= message_level {
+func logMessage(logLevel int, message_level int, format string, a ...interface{}) {
+	if logLevel >= message_level {
 		fmt.Printf(format, a...)
 	}
 }
