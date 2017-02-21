@@ -70,9 +70,9 @@ func neuronLoop(neuron *neuron) {
 	for {
 		select {
 		case v := <-neuron.input:
-			neuron.trace("recieved %v", v)
+			neuron.trace("received %v", v)
 			neuron.inputs--
-			neuron.trace("neuron.inputs remaing is %v", neuron.inputs)
+			neuron.trace("neuron.inputs remaining is %v", neuron.inputs)
 			neuron.accumulator += v
 			neuron.trace("neuron.accumulator is %v", neuron.accumulator)
 			if neuron.inputs == 0 {
